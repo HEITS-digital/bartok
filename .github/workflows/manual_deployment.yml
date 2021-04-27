@@ -34,4 +34,5 @@ jobs:
     - run: |
         export PATH=$PATH:$(go env GOPATH)/bin
         go get -u github.com/slack-go/slack
-        go run main.go
+        go build -o bartok
+        ./bartok
