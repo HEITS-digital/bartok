@@ -35,5 +35,6 @@ jobs:
         export PATH=$PATH:$(go env GOPATH)/bin
         go get -u github.com/slack-go/slack
         go mod init bartok
+        go mod tidy
         go build -o bartok
         ./bartok
