@@ -28,7 +28,7 @@ func main() {
 	var botChannelJoinedEventReceived bool
 
 	for msg := range rtm.IncomingEvents {
-		fmt.Print("Event Received: ")
+		// fmt.Print("Event Received: ")
 
 		switch ev := msg.Data.(type) {
 		case *slack.HelloEvent:
@@ -49,8 +49,7 @@ func main() {
 			postMessage(*api, channel, "Farewell amigo! :wave:\nWe're really going to miss trying to avoid you around here")
 
 		case *slack.ConnectedEvent:
-			fmt.Println("Infos:", ev.Info)
-			fmt.Println("Connection counter:", ev.ConnectionCount)
+			// Ignore connected
 
 		case *slack.ChannelJoinedEvent:
 			// this flag would be overwritten from the send message
@@ -97,17 +96,26 @@ func getRadomWelcomeMessage(user string) string {
 }
 
 func getNewMemberDM() string {
-	return fmt.Sprintf(teamJoinWelcomeMessageFormat, "CEC0Z16QL", "CPBLBS3SL", "CSKGXKXS5", "G01GE16SBAP", "C01S8NR19TR", "C01NY7FN34Y")
+	return fmt.Sprintf(teamJoinWelcomeMessageFormat, "CSKGXKXS5", "G01GE16SBAP", "CEC2Y6QD9", "C01S8NR19TR", "C01NY7FN34Y")
 }
 
-const teamJoinWelcomeMessageFormat = `Welcome to the HEITS Slack Workspace! I'm Bartók the goat, and hopefully I'll have new functions available soon. :crossed_fingers:
-If you ever need help from our workspace's administrators, please reach out in <#%s>.
-Here's our website <https://heits.digital/>, which you might want to check it out as well. Any website related stuff is discussed here <#%s>.
-This is our vacation planner <https://heims.heits.digital/>. You can authenticate using your Google account and add your vacation days inside so you calendar would reflect the PTO days. 
-Here's a list of a few other channels you could join:
+const teamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 
+I’m Bartók the goat, and I am here to share some useful information with you:
+*1. Internal meetings*
+- Each Monday at 11am we have the Internal & Informal meeting, where we discuss important company updates.
+- Once a month we meet and share knowledge, during the HEITS talks initiative. Come and find out cool stuff, both technical and non-technical.
+*2. Slack channels*
+- If you ever need help from our workspace’s administrators, please reach out in #general
 - Engineering -> <#%s>
 - Administrative & Financial stuff -> <#%s>
-- Games & Hobbies -> <#%s> & <#%s>
-
+- Games, Hobbies & Fun -> <#%s>, <#%s> & <#%s>
 There are quite a few other channels, depending on your interests or location. Just click on the :heavy_plus_sign: next to the channel list in the sidebar, and click Browse Channels to search for anything that interests you.
-Now, enjoy our community and have fun! :happygoat:`
+*3. PTO*
+- This is our vacation planner https://heims.heits.digital/. You can authenticate using your Google account and add your vacation days here. Your Google calendar will later reflect the PTO days.
+- For any other information regarding our benefits, or other administrative aspects, you can always reach Lidia Rusu from HR or Florina Condulet from Finance & Administration.
+*4. Stay connected*
+- Here’s our website https://heits.digital/ - check it out
+- Facebook page: https://www.facebook.com/heits.digital - Like & Share
+- Linkedin page: https://www.linkedin.com/company/heits-digital/ - Follow & Share
+Hope I could be of help and I am working on adding new useful functions. If you have any suggestions, please drop a message to the engineering team.
+Sit back, relax, enjoy our community and have fun! :happygoat:`
