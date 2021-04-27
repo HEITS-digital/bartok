@@ -26,11 +26,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v2
-    # Runs a single command using the runners shell
-    - name: set slack token var
-      run: export SLACK_TOKEN=${{ github.event.inputs.name }}
     - name: deploy
       run: |
         export SLACK_TOKEN=${{ github.event.inputs.name }}
         chmod +x ${GITHUB_WORKSPACE}/deploy.sh
         sh ./deploy.sh run
+      shell: bash
