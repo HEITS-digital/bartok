@@ -11,7 +11,8 @@
             "mode": "auto",
             "program": "${workspaceFolder}",
             "env": {
-                "SLACK_TOKEN":"<add_here_the_slack_token>"
+                "SLACK_TOKEN":"xoxb-...",
+                "SLACK_SIGNING_SECRET":"..."
               }
         }
     ]

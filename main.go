@@ -1,79 +1,122 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"os"
 	"time"
 
 	"github.com/slack-go/slack"
+	"github.com/slack-go/slack/slackevents"
 )
 
+var api = slack.New(os.Getenv("SLACK_TOKEN"), slack.OptionDebug(true))
+var botUserId string
+
 func main() {
-	token, ok := os.LookupEnv("SLACK_TOKEN")
-	if !ok {
-		fmt.Println("Missing SLACK_TOKEN in environment")
-		os.Exit(1)
-	}
-	api := slack.New(
-		token,
-		slack.OptionDebug(true),
-		slack.OptionLog(log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags)),
-	)
-
-	rtm := api.NewRTM()
-	go rtm.ManageConnection()
-	// messages := 0
-	var botChannelJoinedEventReceived bool
-
-	for msg := range rtm.IncomingEvents {
-		// fmt.Print("Event Received: ")
-
-		switch ev := msg.Data.(type) {
-		case *slack.HelloEvent:
-			// Ignore hello
-
-		case *slack.MemberJoinedChannelEvent:
-			fmt.Printf("Member joined information: %v\n", ev)
-			channel := ev.Channel
-			user := ev.User
-			if !botChannelJoinedEventReceived {
-				postMessage(*api, channel, getRadomWelcomeMessage(user))
-				postMessage(*api, user, getNewMemberDM())
-			}
-
-		case *slack.MemberLeftChannelEvent:
-			fmt.Printf("Member left information: %v\n", ev)
-			channel := ev.Channel
-			postMessage(*api, channel, "Farewell amigo! :wave:\nWe're really going to miss trying to avoid you around here")
-
-		case *slack.ConnectedEvent:
-			// Ignore connected
-
-		case *slack.ChannelJoinedEvent:
-			// this flag would be overwritten from the send message
-			botChannelJoinedEventReceived = true
-
-		case *slack.DesktopNotificationEvent:
-			if ev.IsChannelInvite && botChannelJoinedEventReceived {
-				channel := ev.Channel
-				postMessage(*api, channel, "Hi all! I'm Bartók the goat.\nI'm still trying to figure out stuff so be pacient and don't ping me with messages for now.")
-				botChannelJoinedEventReceived = false
-			}
-
-		case *slack.RTMError:
-			fmt.Printf("Error: %s\n", ev.Error())
-
-		case *slack.InvalidAuthEvent:
-			fmt.Printf("Invalid credentials")
+	http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
 			return
-
-		default:
-			// Ignore other events..
-			//fmt.Printf("Unexpected: %v\n", msg.Data)
 		}
+		sv, err := slack.NewSecretsVerifier(r.Header, os.Getenv("SLACK_SIGNING_SECRET"))
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if _, err := sv.Write(body); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if err := sv.Ensure(); err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		eventsAPIEvent, err := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if eventsAPIEvent.Type == slackevents.URLVerification {
+			verifyRequestAndRespond(w, body)
+		}
+
+		if eventsAPIEvent.Type == slackevents.CallbackEvent {
+			handleSlackCallbackEvents(eventsAPIEvent)
+		}
+	})
+	fmt.Println("Server listening")
+	http.ListenAndServe(":8080", nil)
+}
+
+func handleSlackCallbackEvents(eventsAPIEvent slackevents.EventsAPIEvent) {
+	innerEvent := eventsAPIEvent.InnerEvent
+	fmt.Println("Incoming callback event: ", innerEvent)
+
+	switch ev := innerEvent.Data.(type) {
+	case *slackevents.AppMentionEvent:
+		// verify if this mention comes from a thread and reply back if so
+		if len(ev.ThreadTimeStamp) > 0 {
+			api.PostMessage(ev.Channel, slack.MsgOptionText(getRadomMessage(ev.User), false), slack.MsgOptionAsUser(true), slack.MsgOptionTS(ev.ThreadTimeStamp))
+		} else {
+			postMessage(*api, ev.Channel, getRadomMessage(ev.User))
+		}
+
+	case *slackevents.MemberJoinedChannelEvent:
+		if !(len(botUserId) > 0) {
+			botUserId = getBotUserId(*api)
+		}
+		// avoid sending messages when the bot is added to a channel
+		if ev.User != botUserId {
+			postMessage(*api, ev.Channel, getRadomWelcomeMessage(ev.User))
+			postMessage(*api, ev.User, getNewMemberDM())
+		}
+
+	case *slackevents.MemberLeftChannelEvent:
+		postMessage(*api, ev.Channel, "Farewell amigo! :wave:\nWe're really going to miss trying to avoid you around here.")
 	}
+}
+
+func verifyRequestAndRespond(w http.ResponseWriter, body []byte) {
+	var r *slackevents.ChallengeResponse
+	err := json.Unmarshal([]byte(body), &r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(r.Challenge))
+}
+
+func getRadomMessage(user string) string {
+	rand.Seed(time.Now().Unix())
+	messages := []string{
+		"Hey <@%v>. Where is the beef? ",
+		"Sorry <@%v> but I can't deal with you now.\nThis week is so very busy and my skin is broken.",
+		"Yes <@%v>\nI have superpowers because I was born at a very young age.",
+		"Stand back <@%v>, your hair makes me nervous",
+		"Hey <@%v>.\nWould you like to kiss my flamingo? :flamingo:",
+		"<@%v> on a scale of 1 to 5, how anxious are you when using public bathrooms?",
+		"Stop asking for my number <@%v>!!!",
+		"No <@%v>. You can't eat bald eagles because they are endangered.",
+		"Are you afraid of raccoons <@%v>?",
+		"Pickled cabbage -> that's my secret\nWhat's yours <@%v>?",
+	}
+	n := rand.Int() % len(messages)
+	return fmt.Sprintf(messages[n], user)
+}
+
+func getBotUserId(api slack.Client) string {
+	response, e := api.AuthTest()
+	if e != nil {
+		fmt.Printf("Auth error when trying to get the bot user ID: %s\n", e)
+	}
+	return response.UserID
 }
 
 func postMessage(api slack.Client, channel, message string) string {
@@ -96,16 +139,16 @@ func getRadomWelcomeMessage(user string) string {
 }
 
 func getNewMemberDM() string {
-	return fmt.Sprintf(teamJoinWelcomeMessageFormat, "CSKGXKXS5", "G01GE16SBAP", "CEC2Y6QD9", "C01S8NR19TR", "C01NY7FN34Y")
+	return fmt.Sprintf(teamJoinWelcomeMessageFormat, "CEC0Z16QL", "CSKGXKXS5", "C02054LCV6E", "CEC2Y6QD9", "C01S8NR19TR", "C01NY7FN34Y")
 }
 
 const teamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 
 I’m Bartók the goat, and I am here to share some useful information with you:
 *1. Internal meetings*
-- Each Monday at 11am we have the Internal & Informal meeting, where we discuss important company updates.
+- Each Monday at 11am we have the Internal & Informal meeting, where we disc	uss important company updates.
 - Once a month we meet and share knowledge, during the HEITS talks initiative. Come and find out cool stuff, both technical and non-technical.
 *2. Slack channels*
-- If you ever need help from our workspace’s administrators, please reach out in #general
+- If you ever need help from our workspace’s administrators, please reach out in <#%s>
 - Engineering -> <#%s>
 - Administrative & Financial stuff -> <#%s>
 - Games, Hobbies & Fun -> <#%s>, <#%s> & <#%s>
