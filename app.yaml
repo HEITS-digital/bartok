@@ -1,0 +1,4 @@
+runtime: go115
+env_variables:
+  SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+  SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
