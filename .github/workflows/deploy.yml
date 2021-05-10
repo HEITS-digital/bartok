@@ -4,18 +4,6 @@ on:
   push:
     branches: [ main ]
     
-    build:
-    name: build and deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel previous run
-        uses: styfle/cancel-workflow-action@0.7.0
-        with:
-          ignore_sha: true
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: repo checkout
-        uses: actions/checkout@v2
-
 jobs:
   run:
     runs-on: ubuntu-latest
