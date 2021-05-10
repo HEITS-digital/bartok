@@ -1,0 +1,31 @@
+name: Deploy to Google App Engine
+
+on:
+  push:
+    branches: [ main ]
+    
+    build:
+    name: build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous run
+        uses: styfle/cancel-workflow-action@0.7.0
+        with:
+          ignore_sha: true
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: repo checkout
+        uses: actions/checkout@v2
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: repo checkout
+        uses: actions/checkout@v2
+      - name: Deploy to App Engine
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: app.yaml
+          project_id: ${{ secrets.GCP_PROJECT }}
+          credentials: ${{ secrets.GCP_SA_KEY }}
