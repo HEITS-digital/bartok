@@ -13,8 +13,8 @@ jobs:
         uses: actions/checkout@v2
       - name: prepare the secrets for deployment
         run: |
-          sed -i '' 's/slack-token/${{ secrets.SLACK_TOKEN }}/g' app.yaml
-          sed -i '' 's/slack-signing-secret/${{ secrets.SLACK_SIGNING_SECRET }}/g' app.yaml
+          sed -i "" "s/slack-token/${{ secrets.SLACK_TOKEN }}/g" app.yaml
+          sed -i "" "s/slack-signing-secret/${{ secrets.SLACK_SIGNING_SECRET }}/g" app.yaml
       - name: Deploy to App Engine
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
