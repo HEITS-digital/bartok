@@ -1,6 +1,6 @@
 ### Bartók - the community bot
 
-This is a small didactic project, with the purpose of showcasing a basic integration with slack events api.
+This is a tiny playful project, with the purpose of showcasing a basic integration with slack events api.
 
 ##### Tech stack:
 
@@ -20,5 +20,8 @@ In case you're wondering about the performance aspect, it's barely noticeable at
 
 ##### Contributing
 
--WIP-
+Clone the repo and create a PR against the main branch and notify the other contributors for review. 
+Once the PR passed the review and gets pushed, there's a [workflow available](https://github.com/HEITS-digital/bartok/actions/workflows/deploy.yml) which deploys the new version to the Google App Engine. This is also promoting the deployed version to receive all traffic automatically.
+
+Enjoy yourself!
   
