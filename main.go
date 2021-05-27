@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/slack-go/slack"
@@ -60,11 +61,18 @@ func handleSlackCallbackEvents(eventsAPIEvent slackevents.EventsAPIEvent) {
 
 	switch ev := innerEvent.Data.(type) {
 	case *slackevents.AppMentionEvent:
+		var message string
+		//verify if this is a question
+		if strings.HasSuffix(ev.Text, "?") {
+			message = getRandomReply(ev.User, randomAnswers)
+		} else {
+			message = getRandomReply(ev.User, randomReplies)
+		}
 		// verify if this mention comes from a thread and reply back if so
 		if len(ev.ThreadTimeStamp) > 0 {
-			api.PostMessage(ev.Channel, slack.MsgOptionText(getRadomMessage(ev.User), false), slack.MsgOptionAsUser(true), slack.MsgOptionTS(ev.ThreadTimeStamp))
+			api.PostMessage(ev.Channel, slack.MsgOptionText(message, false), slack.MsgOptionAsUser(true), slack.MsgOptionTS(ev.ThreadTimeStamp))
 		} else {
-			postMessage(*api, ev.Channel, getRadomMessage(ev.User))
+			postMessage(*api, ev.Channel, message)
 		}
 
 	case *slackevents.MemberJoinedChannelEvent:
@@ -93,20 +101,8 @@ func verifyRequestAndRespond(w http.ResponseWriter, body []byte) {
 	w.Write([]byte(r.Challenge))
 }
 
-func getRadomMessage(user string) string {
+func getRandomReply(user string, messages []string) string {
 	rand.Seed(time.Now().Unix())
-	messages := []string{
-		"Hey <@%v>. Where is the beef? ",
-		"Sorry <@%v> but I can't deal with you now.\nThis week is so very busy and my skin is broken.",
-		"Yes <@%v>\nI have superpowers because I was born at a very young age.",
-		"Stand back <@%v>, your hair makes me nervous",
-		"Hey <@%v>.\nWould you like to kiss my flamingo? :flamingo:",
-		"<@%v> on a scale of 1 to 5, how anxious are you when using public bathrooms?",
-		"Stop asking for my number <@%v>!!!",
-		"No <@%v>. You can't eat bald eagles because they are endangered.",
-		"Are you afraid of raccoons <@%v>?",
-		"Pickled cabbage -> that's my secret\nWhat's yours <@%v>?",
-	}
 	n := rand.Int() % len(messages)
 	return fmt.Sprintf(messages[n], user)
 }
@@ -140,6 +136,28 @@ func getRadomWelcomeMessage(user string) string {
 
 func getNewMemberDM() string {
 	return fmt.Sprintf(teamJoinWelcomeMessageFormat, "CEC0Z16QL", "CSKGXKXS5", "C02054LCV6E", "CEC2Y6QD9", "C01S8NR19TR", "C01NY7FN34Y")
+}
+
+var randomReplies = []string{
+	"Hey <@%v>. Where is the beef?",
+	"Sorry <@%v> but I can't deal with you now.\nThis week is so very busy and my skin is broken",
+	"Yes <@%v>\nI have superpowers because I was born at a very young age",
+	"Stand back <@%v>, your hair makes me nervous",
+	"Hey <@%v>.\nWould you like to kiss my flamingo? :flamingo:",
+	"<@%v> on a scale of 1 to 5, how anxious are you when using public bathrooms?",
+	"Stop asking for my number <@%v>!!!",
+	"No <@%v>. You can't eat bald eagles because they are endangered",
+	"Are you afraid of raccoons <@%v>?",
+	"Pickled cabbage -> that's my secret\nWhat's yours <@%v>?",
+}
+
+var randomAnswers = []string{
+	"Is that a serious question <@%v>?",
+	"Hey <@%v> you know what?\nI’ll answer you in a bit. I’m now waiting for motivation to build up",
+	"Sorry <@%v> but I just found something important to deal with at this moment",
+	"I have no idea how to answer this <@%v> :thinking_face:",
+	"I don't think I'm qualified to answer this now <@%v>",
+	"No idea <@%v>. You know you can ask your friends, or google it, right?",
 }
 
 const teamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 
