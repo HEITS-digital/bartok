@@ -7,9 +7,11 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
+	"github.com/abadojack/whatlanggo"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -61,12 +63,23 @@ func handleSlackCallbackEvents(eventsAPIEvent slackevents.EventsAPIEvent) {
 
 	switch ev := innerEvent.Data.(type) {
 	case *slackevents.AppMentionEvent:
+		// detect the language of the received text
+		info := whatlanggo.Detect(removeMentionFromText(ev.Text))
 		var message string
 		//verify if this is a question
 		if strings.HasSuffix(ev.Text, "?") {
-			message = getRandomReply(ev.User, randomAnswers)
+			if info.Lang == whatlanggo.Eng {
+				message = getRandomReply(ev.User, randomEnAnswers)
+			} else {
+				// if no english is detected, just reply in romanian
+				message = getRandomReply(ev.User, randomRoAnswers)
+			}
 		} else {
-			message = getRandomReply(ev.User, randomReplies)
+			if info.Lang == whatlanggo.Eng {
+				message = getRandomReply(ev.User, randomEnReplies)
+			} else {
+				message = getRandomReply(ev.User, randomRoReplies)
+			}
 		}
 		// verify if this mention comes from a thread and reply back if so
 		if len(ev.ThreadTimeStamp) > 0 {
@@ -88,6 +101,12 @@ func handleSlackCallbackEvents(eventsAPIEvent slackevents.EventsAPIEvent) {
 	case *slackevents.MemberLeftChannelEvent:
 		postMessage(*api, ev.Channel, "Farewell amigo! :wave:\nWe're really going to miss trying to avoid you around here.")
 	}
+}
+
+func removeMentionFromText(text string) string {
+	// in order to process a received test, we'll going to get rid of the mention part inside
+	reg := regexp.MustCompile(`\<([^)]+)\>`)
+	return reg.ReplaceAllString(text, "")
 }
 
 func verifyRequestAndRespond(w http.ResponseWriter, body []byte) {
@@ -138,7 +157,7 @@ func getNewMemberDM() string {
 	return fmt.Sprintf(teamJoinWelcomeMessageFormat, "CEC0Z16QL", "CSKGXKXS5", "C02054LCV6E", "CEC2Y6QD9", "C01S8NR19TR", "C01NY7FN34Y")
 }
 
-var randomReplies = []string{
+var randomEnReplies = []string{
 	"Hey <@%v>. Where is the beef?",
 	"Sorry <@%v> but I can't deal with you now.\nThis week is so very busy and my skin is broken",
 	"Yes <@%v>\nI have superpowers because I was born at a very young age",
@@ -146,18 +165,40 @@ var randomReplies = []string{
 	"Hey <@%v>.\nWould you like to kiss my flamingo? :flamingo:",
 	"<@%v> on a scale of 1 to 5, how anxious are you when using public bathrooms?",
 	"Stop asking for my number <@%v>!!!",
-	"No <@%v>. You can't eat bald eagles because they are endangered",
 	"Are you afraid of raccoons <@%v>?",
 	"Pickled cabbage -> that's my secret\nWhat's yours <@%v>?",
+	"<@%v> -> :talktothehand:",
+	"<@%v> -> :lalala:",
 }
 
-var randomAnswers = []string{
+var randomRoReplies = []string{
+	"Hai sa lasam prostiile pt alta data <@%v>",
+	"<@%v>, pt binele tuturor hai sa pretindem ca ti-ai vazut de treaba ta",
+	"Oare care-l platiti pe <@%v>? Sa va rog sa-i dati ceva de lucru",
+	"Hai sa continuam mai tarziu <@%v>. Acum am de finalizat o comanda la ikea",
+	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici?",
+	"N-am timp acum <@%v>. Hai sa ne auzim mai tarziu... mult mai tarziu",
+	"<@%v> -> :talktothehand:",
+	"<@%v> -> :lalala:",
+}
+
+var randomEnAnswers = []string{
 	"Is that a serious question <@%v>?",
 	"Hey <@%v> you know what?\nI’ll answer you in a bit. I’m now waiting for motivation to build up",
 	"Sorry <@%v> but I just found something important to deal with at this moment",
 	"I have no idea how to answer this <@%v> :thinking_face:",
 	"I don't think I'm qualified to answer this now <@%v>",
-	"No idea <@%v>. You know you can ask your friends, or google it, right?",
+	"Only questions and questions... You know, I have questions too <@%v>. But who's curious of it?",
+}
+
+var randomRoAnswers = []string{
+	"Mda… Alta intrebare <@%v>! :alta-intrebare:",
+	"Habar n-am ce sa-ti raspund la asta <@%v>. Lasa-ma sa ma mai gandesc",
+	"Haha <@%v>. Ce te face sa crezi ca am timp pt intrebari acum?",
+	"Revin imediat cu un raspuns <@%v>. Momentan mi-am luat o pauza pt gustare :leafy_green",
+	"Scuze <@%v>, dar momentan sunt lucruri mai importante de facut decat sa caut raspunsuri pentru tine",
+	"Ia zi <@%v>, cine crezi ca te plateste sa ma iei pe mine la intrebari?",
+	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici? :grin:",
 }
 
 const teamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 
