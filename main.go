@@ -147,7 +147,9 @@ func getRadomWelcomeMessage(user string) string {
 	messages := []string{
 		"Hello <@%v>, and welcome to HEITS :wave:",
 		"HOORAY!\nWelcome to the team <@%v> :dog_hooray:",
-		"Ciao <@%v>\nBenvenuto nella nostra famiglia! :mafia:",
+		"Welcome aboard <@%v>\nWoot Woot :woot_woot:",
+		"Welcome to the tribe <@%v>. Bravo! :blob_clap:",
+		"<@%v> just joined our family!\nWelcome to the club :mafia:",
 	}
 	n := rand.Int() % len(messages)
 	return fmt.Sprintf(messages[n], user)
@@ -196,7 +198,7 @@ var randomRoAnswers = []string{
 	"Habar n-am ce sa-ti raspund la asta <@%v>. Lasa-ma sa ma mai gandesc",
 	"Haha <@%v>. Ce te face sa crezi ca am timp pt intrebari acum?",
 	"Revin imediat cu un raspuns <@%v>. Momentan mi-am luat o pauza pt gustare :leafy_green",
-	"Scuze <@%v>, dar momentan sunt lucruri mai importante de facut decat sa caut raspunsuri pentru tine",
+	"Scuze <@%v>, dar momentan n-am destula motivatie sa-ti raspund",
 	"Ia zi <@%v>, cine crezi ca te plateste sa ma iei pe mine la intrebari?",
 	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici? :grin:",
 }
