@@ -176,21 +176,23 @@ var randomEnReplies = []string{
 var randomRoReplies = []string{
 	"Hai sa lasam prostiile pt alta data <@%v>",
 	"<@%v>, pt binele tuturor hai sa pretindem ca ti-ai vazut de treaba ta",
-	"Oare care-l platiti pe <@%v>? Sa va rog sa-i dati ceva de lucru",
+	"Hey hey, pare ca <@%v> si-a terminat mai devreme treaba azi. Asta da productivitate!",
 	"Hai sa continuam mai tarziu <@%v>. Acum am de finalizat o comanda la ikea",
-	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici?",
+	"Hopa si <@%v>. Orice numai sa treaca ziua cat mai repede",
 	"N-am timp acum <@%v>. Hai sa ne auzim mai tarziu... mult mai tarziu",
 	"<@%v> -> :talktothehand:",
 	"<@%v> -> :lalala:",
+	"Ia zi <@%v>, cat ai dat pentru bagatu-n seama?",
+	"Iar incepe <@%v> cu cicaleala\nNici nu se putea altfel!",
 }
 
 var randomEnAnswers = []string{
 	"Is that a serious question <@%v>?",
 	"Hey <@%v> you know what?\nI’ll answer you in a bit. I’m now waiting for motivation to build up",
-	"Sorry <@%v> but I just found something important to deal with at this moment",
+	"Sorry <@%v> but I just found something more important to deal with at this moment",
 	"I have no idea how to answer this <@%v> :thinking_face:",
 	"I don't think I'm qualified to answer this now <@%v>",
-	"Only questions and questions... You know, I have questions too <@%v>. But who's curious of it?",
+	"Only questions and questions... You know, I have questions too <@%v>.\nBut no one's curious",
 }
 
 var randomRoAnswers = []string{
@@ -199,8 +201,10 @@ var randomRoAnswers = []string{
 	"Haha <@%v>. Ce te face sa crezi ca am timp pt intrebari acum?",
 	"Revin imediat cu un raspuns <@%v>. Momentan mi-am luat o pauza pt gustare :leafy_green",
 	"Scuze <@%v>, dar momentan n-am destula motivatie sa-ti raspund",
-	"Ia zi <@%v>, cine crezi ca te plateste sa ma iei pe mine la intrebari?",
+	"As putea sa-ti raspund la asta <@%v>\nDar nu vreau!",
 	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici? :grin:",
+	"Iti raspund mai tarziu <@%v>\nDeocamdata nu simt nevoia",
+	"Nu stiu... dar zi-ne tu <@%v>. Pare ca deja le stii pe toate",
 }
 
 const teamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 
