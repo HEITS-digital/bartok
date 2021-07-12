@@ -199,7 +199,7 @@ var randomRoAnswers = []string{
 	"Mda… Alta intrebare <@%v>! :alta-intrebare:",
 	"Habar n-am ce sa-ti raspund la asta <@%v>. Lasa-ma sa ma mai gandesc",
 	"Haha <@%v>. Ce te face sa crezi ca am timp pt intrebari acum?",
-	"Revin imediat cu un raspuns <@%v>. Momentan mi-am luat o pauza pt gustare :leafy_green",
+	"Revin imediat cu un raspuns <@%v>. Momentan mi-am luat o pauza pt gustare :leafy_green:",
 	"Scuze <@%v>, dar momentan n-am destula motivatie sa-ti raspund",
 	"As putea sa-ti raspund la asta <@%v>\nDar nu vreau!",
 	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici? :grin:",
