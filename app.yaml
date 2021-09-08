@@ -2,3 +2,4 @@ runtime: go115
 env_variables:
   SLACK_TOKEN: slack-token
   SLACK_SIGNING_SECRET: slack-signing-secret
+  SLACK_VERIFICATION_TOKEN: slack-verification-token

@@ -27,7 +27,7 @@ function run() {
 if [[ $# -eq 0 ]] ; then
 echo "
 
-USAGE: ./deploy.sh [option]
+USAGE: ./bartok.sh [option]
 
 where [option] is one of:
 
