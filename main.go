@@ -60,8 +60,14 @@ func main() {
 }
 
 type SlashCommandResponse struct {
-	ResponseType string `json:"response_type"`
-	Text         string `json:"text"`
+	ResponseType string       `json:"response_type"`
+	Text         string       `json:"text"`
+	Attachments  []Attachment `json:"attachments"`
+}
+
+type Attachment struct {
+	Text     string `json:"text"`
+	ImageUrl string `json:"image_url"`
 }
 
 func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
@@ -81,6 +87,35 @@ func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 		data := &SlashCommandResponse{
 			ResponseType: "in_channel",
 			Text:         ":chucknorris: " + getJoke(),
+		}
+		response, err := json.Marshal(data)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		w.Write([]byte(response))
+	case "/truth":
+		params := &slack.Msg{Text: s.Text}
+
+		answer, err := getYesNoAnswer()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		var data SlashCommandResponse
+		if strings.HasSuffix(params.Text, "?") {
+			data = SlashCommandResponse{
+				ResponseType: "in_channel",
+				Attachments:  []Attachment{{Text: strings.ToUpper(answer.Answer), ImageUrl: answer.Image}},
+			}
+		} else {
+			answer.Answer = "This doesn't seem to be a question. Try harder!"
+			data = SlashCommandResponse{
+				ResponseType: "ephemeral",
+				Text:         answer.Answer,
+			}
 		}
 		response, err := json.Marshal(data)
 		if err != nil {
