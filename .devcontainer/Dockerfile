@@ -7,8 +7,11 @@ RUN apk update && apk add bash
 RUN apk add build-base
 
 # Install packages and Go language server
-RUN apk add -q --update --progress --no-cache git sudo openssh-client zsh
+RUN apk add -q --update --progress --no-cache curl git sudo openssh-client zsh
 # RUN go get -u -v golang.org/x/tools/gopls 2>&1
+
+# Install oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 RUN go get -x -d github.com/stamblerre/gocode 2>&1 \
     && go build -o gocode-gomod github.com/stamblerre/gocode \
