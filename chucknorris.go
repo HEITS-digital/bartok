@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func getJoke() string {
+func getChuckNorrisJoke() string {
 	response, err := http.Get("https://api.chucknorris.io/jokes/random")
 
 	const errorResponse string = "I ain't got time for this. No jokes for you today!"

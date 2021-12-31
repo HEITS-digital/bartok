@@ -72,6 +72,7 @@ type Attachment struct {
 
 func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 	s, err := slack.SlashCommandParse(r)
+	var data SlashCommandResponse
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -84,27 +85,17 @@ func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch s.Command {
 	case "/chucknorris":
-		data := &SlashCommandResponse{
+		data = SlashCommandResponse{
 			ResponseType: "in_channel",
-			Text:         ":chucknorris: " + getJoke(),
+			Text:         ":chucknorris: " + getChuckNorrisJoke(),
 		}
-		response, err := json.Marshal(data)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(response))
 	case "/truth":
 		params := &slack.Msg{Text: s.Text}
-
-		answer, err := getYesNoAnswer()
+		answer, err := getAnswer()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		var data SlashCommandResponse
 		if strings.HasSuffix(params.Text, "?") {
 			data = SlashCommandResponse{
 				ResponseType: "in_channel",
@@ -117,18 +108,18 @@ func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 				Text:         answer.Answer,
 			}
 		}
-		response, err := json.Marshal(data)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(response))
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	response, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte(response))
 }
 
 func eventHandler(eventsAPIEvent slackevents.EventsAPIEvent) {

@@ -41,13 +41,13 @@ var randomRoReplies = []string{
 	"Hai sa lasam prostiile pt alta data <@%v>",
 	"<@%v>, pt binele tuturor hai sa pretindem ca ti-ai vazut de treaba ta",
 	"Hey hey, pare ca <@%v> si-a terminat mai devreme treaba azi. Asta da productivitate!",
-	"Hai sa continuam mai tarziu <@%v>. Acum am de finalizat o comanda la ikea",
 	"Hopa si <@%v>. Orice numai sa treaca ziua cat mai repede",
 	"N-am timp acum <@%v>. Hai sa ne auzim mai tarziu... mult mai tarziu",
-	"<@%v> -> :talktothehand:",
-	"<@%v> -> :lalala:",
+	"Uite cum a mai trecut un an si <@%v> tot nu se invata minte",
 	"Ia zi <@%v>, cat ai dat pentru bagatu-n seama?",
 	"Iar incepe <@%v> cu cicaleala\nNici nu se putea altfel!",
+	"<@%v>, stii bancul cu iarna?\nIar n-ai de lucru?",
+	"<@%v>, stii bancul cu Nicu?\nNi cum trece ziua si n-ai lucrat nimic",
 }
 
 var randomEnAnswers = []string{
@@ -65,10 +65,10 @@ var randomRoAnswers = []string{
 	"Haha <@%v>. Ce te face sa crezi ca am timp pt intrebari acum?",
 	"Revin imediat cu un raspuns <@%v>. Momentan mi-am luat o pauza pt gustare :leafy_green:",
 	"Scuze <@%v>, dar momentan n-am destula motivatie sa-ti raspund",
-	"As putea sa-ti raspund la asta <@%v>\nDar nu vreau!",
-	"<@%v> ai observat ca nu-ti raspund in private s-acum incerci aici? :grin:",
 	"Iti raspund mai tarziu <@%v>\nDeocamdata nu simt nevoia",
 	"Nu stiu... dar zi-ne tu <@%v>. Pare ca deja le stii pe toate",
+	"Raspunde-ti singur <@%v>. Oricum, nu cred ca-i prima data cand aleg sa te ignor",
+	"Sa stii ca exista si intrebari castigatoare <@%v>\nInsa la cum te stiu, slabe sanse sa vina de la tine",
 }
 
 const teamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 

@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func getYesNoAnswer() (apiResponse YesNoApiResponse, err error) {
+func getAnswer() (apiResponse TruthApiResponse, err error) {
 	response, err := http.Get("https://yesno.wtf/api/")
 
 	if err != nil {
@@ -26,7 +26,7 @@ func getYesNoAnswer() (apiResponse YesNoApiResponse, err error) {
 	return apiResponse, nil
 }
 
-type YesNoApiResponse struct {
+type TruthApiResponse struct {
 	Answer string `json:"answer"`
 	Forced bool   `json:"forced"`
 	Image  string `json:"image"`
