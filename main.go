@@ -164,7 +164,9 @@ func eventHandler(eventsAPIEvent slackevents.EventsAPIEvent) {
 		}
 
 	case *slackevents.MemberLeftChannelEvent:
-		postMessage(*api, ev.Channel, "Farewell amigo! :wave:\nWe're really going to miss trying to avoid you around here.")
+		intro := "Oh no, someone just left our team! But who cares right?\nAnyway, here's a geek joke: %s"
+		message := fmt.Sprintf(intro, getGeekJoke())
+		postMessage(*api, ev.Channel, message)
 	}
 }
 
