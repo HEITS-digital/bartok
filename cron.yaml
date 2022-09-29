@@ -1,5 +1,5 @@
 cron:
-  - description: 'renew points'
+  - description: 'watercooler message'
     url: /cron/watercooler
     target: default
     timezone: Europe/Bucharest
