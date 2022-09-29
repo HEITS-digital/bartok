@@ -171,7 +171,7 @@ func eventHandler(eventsAPIEvent slackevents.EventsAPIEvent) {
 		if !(len(botUserId) > 0) {
 			botUserId = getBotUserId(*api)
 		}
-		// send messages when non bot user is added and when added to a specified channel id
+		// send messages when a non bot user is added and when added to a specified channel id
 		if ev.User != botUserId && ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") {
 			postMessage(*api, ev.Channel, getRadomWelcomeMessage(ev.User))
 			postMessage(*api, ev.User, getNewMemberDM())
