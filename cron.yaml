@@ -2,8 +2,7 @@ cron:
   - description: 'watercooler message'
     url: /cron/watercooler
     target: default
-    timezone: Europe/Bucharest
-    schedule: 0 14 * * 1-5
+    schedule: Every Monday, Wednesday and Friday at 11:00
     retry_parameters:
       min_backoff_seconds: 2.5
       max_doublings: 5
