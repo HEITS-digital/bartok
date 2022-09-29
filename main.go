@@ -171,16 +171,11 @@ func eventHandler(eventsAPIEvent slackevents.EventsAPIEvent) {
 		if !(len(botUserId) > 0) {
 			botUserId = getBotUserId(*api)
 		}
-		// avoid sending messages when the bot is added to a channel
-		if ev.User != botUserId {
+		// send messages when non bot user is added and when added to a specified channel id
+		if ev.User != botUserId && ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") {
 			postMessage(*api, ev.Channel, getRadomWelcomeMessage(ev.User))
 			postMessage(*api, ev.User, getNewMemberDM())
 		}
-
-	case *slackevents.MemberLeftChannelEvent:
-		intro := "Oh no, someone just left our team! But who cares right?\nAnyway, here's a geek joke: %s"
-		message := fmt.Sprintf(intro, getGeekJoke())
-		postMessage(*api, ev.Channel, message)
 	}
 }
 
