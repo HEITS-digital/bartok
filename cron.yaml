@@ -2,7 +2,7 @@ cron:
   - description: 'watercooler message'
     url: /cron/watercooler
     target: default
-    schedule: Every Monday and Wednesday at 11:00
+    schedule: Every Monday and Wednesday and Friday at 11:00
     retry_parameters:
       min_backoff_seconds: 2.5
       max_doublings: 5
