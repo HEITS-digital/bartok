@@ -4,3 +4,4 @@ env_variables:
   SLACK_SIGNING_SECRET: slack-signing-secret
   SLACK_VERIFICATION_TOKEN: slack-verification-token
   WATERCOOLER_CHANNEL_ID: C0403NFNUJE
+  GENERAL_CHANNEL_ID: CEC0Z16QL
