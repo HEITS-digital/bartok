@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -53,6 +54,19 @@ func main() {
 
 		if eventsAPIEvent.Type == slackevents.CallbackEvent {
 			eventHandler(eventsAPIEvent)
+		}
+	})
+
+	http.HandleFunc("/cron/watercooler", func(w http.ResponseWriter, r *http.Request) {
+		channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
+		watercoolerQuestion := getRandomMessage(waterCoolerQuestions)
+		questionMarkdown := fmt.Sprintf(">*%s*", watercoolerQuestion)
+		var blocks []slack.Block
+		blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", "No, tu ce zici", true, false), nil, nil))
+		blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", questionMarkdown, false, false), nil, nil))
+		_, _, err := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
+		if err != nil {
+			log.Fatal(err)
 		}
 	})
 	fmt.Println("Server listening")
@@ -187,10 +201,13 @@ func removeMentionFromText(text string) string {
 	return reg.ReplaceAllString(text, "")
 }
 
-func getRandomReply(user string, messages []string) string {
+func getRandomMessage(messages []string) string {
 	rand.Seed(time.Now().Unix())
 	n := rand.Int() % len(messages)
-	return fmt.Sprintf(messages[n], user)
+	return messages[n]
+}
+func getRandomReply(user string, messages []string) string {
+	return fmt.Sprintf(getRandomMessage(messages), user)
 }
 
 func getBotUserId(api slack.Client) string {

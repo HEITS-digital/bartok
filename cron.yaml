@@ -1,0 +1,9 @@
+cron:
+  - description: 'renew points'
+    url: /cron/watercooler
+    target: default
+    timezone: Europe/Bucharest
+    schedule: 0 14 * * 1-5
+    retry_parameters:
+      min_backoff_seconds: 2.5
+      max_doublings: 5
