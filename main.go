@@ -23,7 +23,25 @@ var botUserId string
 func main() {
 	http.HandleFunc("/ask", slashCommandHandler)
 
+	http.HandleFunc("/slack/actions", func(w http.ResponseWriter, r *http.Request) {
+		var payload slack.InteractionCallback
+		err := json.Unmarshal([]byte(r.FormValue("payload")), &payload)
+		if err != nil {
+			fmt.Printf("Could not parse action response JSON: %v", err)
+		}
+		for _, action := range payload.ActionCallback.BlockActions {
+			switch action.ActionID {
+			case "another_question_action":
+				handleAnotherQuestion(payload)
+			default:
+				fmt.Printf(`seems like unhandled action with ID: %s`, action.ActionID)
+			}
+		}
+
+	})
+
 	http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("am primit event")
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -42,7 +60,7 @@ func main() {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-		eventsAPIEvent, err := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
+		eventsAPIEvent, err := slackevents.ParseEvent(body, slackevents.OptionNoVerifyToken())
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -57,20 +75,37 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/cron/watercooler", func(w http.ResponseWriter, r *http.Request) {
-		channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
-		blocks := createMessageBlocksForWaterCooler()
-		_, _, err := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
-		if err != nil {
-			log.Fatal(err)
-		}
-	})
+	http.HandleFunc("/cron/watercooler", watercoolerHandler)
+
 	fmt.Println("Server listening")
 	http.ListenAndServe(":8080", nil)
 }
 
+func handleAnotherQuestion(payload slack.InteractionCallback) {
+	if payload.Message.ReplyCount > 0 {
+		fmt.Println("Am intrat aici, e bine!")
+	}
+}
+
+func watercoolerAction() {
+
+	channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
+	blocks := createMessageBlocksForWaterCooler()
+	_, _, err := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+func watercoolerHandler(_ http.ResponseWriter, _ *http.Request) {
+	watercoolerAction()
+}
+
 func createMessageBlocksForWaterCooler() []slack.Block {
-	waterCoolerEnIntro := fmt.Sprintf("%s\n%s", getRandomMessage(waterCoolerGreetings), getRandomMessage(waterCoolerEnIntros))
+	waterCoolerEnIntro := fmt.Sprintf(
+		"%s\n%s",
+		getRandomMessage(waterCoolerGreetings),
+		getRandomMessage(waterCoolerEnIntros),
+	)
 	waterCoolerRoIntro := getRandomMessage(waterCoolerRoIntros)
 
 	question := getRandomFromMap(waterCoolerQuestions)
@@ -82,7 +117,14 @@ func createMessageBlocksForWaterCooler() []slack.Block {
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", waterCoolerEnQuestion, false, false), nil, nil))
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", waterCoolerRoIntro, true, false), nil, nil))
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", waterCoolerRoQuestion, false, false), nil, nil))
-
+	blocks = append(blocks, slack.NewActionBlock(
+		"another_question",
+		slack.NewButtonBlockElement(
+			"another_question_action",
+			"achievement_button",
+			slack.NewTextBlockObject("plain_text", "Altă întrebare", false, false),
+		),
+	))
 	return blocks
 }
 
