@@ -76,9 +76,12 @@ func main() {
 	})
 
 	http.HandleFunc("/cron/watercooler", watercoolerHandler)
-
-	fmt.Println("Server listening")
-	http.ListenAndServe(":8080", nil)
+	port := os.Getenv("PORT")
+	fmt.Printf("Server listening on port %s\n", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func handleAnotherQuestion(payload slack.InteractionCallback) {
@@ -117,14 +120,6 @@ func createMessageBlocksForWaterCooler() []slack.Block {
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", waterCoolerEnQuestion, false, false), nil, nil))
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", waterCoolerRoIntro, true, false), nil, nil))
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", waterCoolerRoQuestion, false, false), nil, nil))
-	blocks = append(blocks, slack.NewActionBlock(
-		"another_question",
-		slack.NewButtonBlockElement(
-			"another_question_action",
-			"achievement_button",
-			slack.NewTextBlockObject("plain_text", "Altă întrebare", false, false),
-		),
-	))
 	return blocks
 }
 
