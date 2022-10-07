@@ -23,7 +23,25 @@ var botUserId string
 func main() {
 	http.HandleFunc("/ask", slashCommandHandler)
 
+	http.HandleFunc("/slack/actions", func(w http.ResponseWriter, r *http.Request) {
+		var payload slack.InteractionCallback
+		err := json.Unmarshal([]byte(r.FormValue("payload")), &payload)
+		if err != nil {
+			fmt.Printf("Could not parse action response JSON: %v", err)
+		}
+		for _, action := range payload.ActionCallback.BlockActions {
+			switch action.ActionID {
+			case "another_question_action":
+				handleAnotherQuestion(payload)
+			default:
+				fmt.Printf(`seems like unhandled action with ID: %s`, action.ActionID)
+			}
+		}
+
+	})
+
 	http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("am primit event")
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -42,7 +60,7 @@ func main() {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-		eventsAPIEvent, err := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
+		eventsAPIEvent, err := slackevents.ParseEvent(body, slackevents.OptionNoVerifyToken())
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -57,20 +75,52 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/cron/watercooler", func(w http.ResponseWriter, r *http.Request) {
-		channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
-		watercoolerQuestion := getRandomMessage(waterCoolerQuestions)
-		questionMarkdown := fmt.Sprintf(">*%s*", watercoolerQuestion)
-		var blocks []slack.Block
-		blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", "No, tu ce zici", true, false), nil, nil))
-		blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", questionMarkdown, false, false), nil, nil))
-		_, _, err := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
-		if err != nil {
-			log.Fatal(err)
-		}
-	})
-	fmt.Println("Server listening")
-	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/cron/watercooler", watercoolerHandler)
+	port := os.Getenv("PORT")
+	fmt.Printf("Server listening on port %s\n", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handleAnotherQuestion(payload slack.InteractionCallback) {
+	if payload.Message.ReplyCount > 0 {
+		fmt.Println("Am intrat aici, e bine!")
+	}
+}
+
+func watercoolerAction() {
+
+	channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
+	blocks := createMessageBlocksForWaterCooler()
+	_, _, err := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+func watercoolerHandler(_ http.ResponseWriter, _ *http.Request) {
+	watercoolerAction()
+}
+
+func createMessageBlocksForWaterCooler() []slack.Block {
+	waterCoolerEnIntro := fmt.Sprintf(
+		"%s\n%s",
+		getRandomMessage(waterCoolerGreetings),
+		getRandomMessage(waterCoolerEnIntros),
+	)
+	waterCoolerRoIntro := getRandomMessage(waterCoolerRoIntros)
+
+	question := getRandomFromMap(waterCoolerQuestions)
+	waterCoolerEnQuestion := fmt.Sprintf(">*%s*", question[0])
+	waterCoolerRoQuestion := fmt.Sprintf(">*%s*", question[1])
+
+	var blocks []slack.Block
+	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", waterCoolerEnIntro, true, false), nil, nil))
+	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", waterCoolerEnQuestion, false, false), nil, nil))
+	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", waterCoolerRoIntro, true, false), nil, nil))
+	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", waterCoolerRoQuestion, false, false), nil, nil))
+	return blocks
 }
 
 type SlashCommandResponse struct {
@@ -196,11 +246,18 @@ func removeMentionFromText(text string) string {
 	return reg.ReplaceAllString(text, "")
 }
 
+func getRandomFromMap(mapItems [][]string) []string {
+	rand.Seed(time.Now().Unix())
+	index := rand.Int() % len(mapItems)
+	return mapItems[index]
+}
+
 func getRandomMessage(messages []string) string {
 	rand.Seed(time.Now().Unix())
 	n := rand.Int() % len(messages)
 	return messages[n]
 }
+
 func getRandomReply(user string, messages []string) string {
 	return fmt.Sprintf(getRandomMessage(messages), user)
 }
