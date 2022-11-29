@@ -199,7 +199,7 @@ var waterCoolerQuestions = [][]string{
 	{"Show us something in your space that you really like.", "Arată-ne ceva în spațiul tău care îți place cu adevărat."},
 	{"What’s one skill that helps you successfully work remotely?", "Care este o abilitate care te ajută să lucrezi cu succes de la distanță?"},
 	{"Do you have a favorite mug? Let us see it and explain why you love it.", "Ai o cană preferată? Să o vedem și să explicăm de ce o iubești."},
-	{"Look around and assess how satisfied you are with your physical workspace. Uită-te în jur și evaluează cât de mulțumit ești de spațiul tău fizic de lucru. Care este un lucru care îți place, despre asta?"},
+	{"Look around and assess how satisfied you are with your physical workspace.", "Uită-te în jur și evaluează cât de mulțumit ești de spațiul tău fizic de lucru. Care este un lucru care îți place, despre asta?"},
 	{"What boundaries have you set to ensure that you unplug from work?", "Ce limite ai stabilit pentru a te asigura că te deconectezi de la serviciu?"},
 	{"What’s normal where you live but might seem weird to the rest of the world?", "Ce este normal acolo unde locuiești, dar ar putea părea ciudat pentru restul lumii?"},
 	{"How do you like to sit in a chair? Let us see it.", "Cum îți place să stai pe un scaun? Să vedem."},

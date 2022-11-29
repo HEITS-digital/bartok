@@ -1,6 +1,8 @@
 package main
 
 import (
+	"cloud.google.com/go/firestore"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -19,6 +21,12 @@ import (
 
 var api = slack.New(os.Getenv("SLACK_TOKEN"), slack.OptionDebug(true))
 var botUserId string
+
+type Question struct {
+	English  string `firestore:"question_en"`
+	Romanian string `firestore:"question_ro"`
+	IsRead   bool   `firestore:"is_read"`
+}
 
 func main() {
 	http.HandleFunc("/ask", slashCommandHandler)
@@ -91,19 +99,34 @@ func handleAnotherQuestion(payload slack.InteractionCallback) {
 }
 
 func watercoolerAction() {
-
-	channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
-	blocks := createMessageBlocksForWaterCooler()
-	_, _, err := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, "bartok-312013")
 	if err != nil {
 		log.Fatal(err)
 	}
+	questions := client.Collection("questions")
+	q, err := questions.Where("is_read", "==", false).Limit(1).Documents(ctx).Next()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var nextQuestion Question
+	if err := q.DataTo(&nextQuestion); err != nil {
+		log.Fatal(err)
+	}
+	channelId := os.Getenv("WATERCOOLER_CHANNEL_ID")
+	blocks := createMessageBlocksForWaterCooler(&nextQuestion)
+	_, _, err2 := api.PostMessage(channelId, slack.MsgOptionBlocks(blocks...))
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	_, err = q.Ref.Update(ctx, []firestore.Update{{Path: "is_read", Value: true}})
+
 }
 func watercoolerHandler(_ http.ResponseWriter, _ *http.Request) {
 	watercoolerAction()
 }
 
-func createMessageBlocksForWaterCooler() []slack.Block {
+func createMessageBlocksForWaterCooler(question *Question) []slack.Block {
 	waterCoolerEnIntro := fmt.Sprintf(
 		"%s\n%s",
 		getRandomMessage(waterCoolerGreetings),
@@ -111,9 +134,8 @@ func createMessageBlocksForWaterCooler() []slack.Block {
 	)
 	waterCoolerRoIntro := getRandomMessage(waterCoolerRoIntros)
 
-	question := getRandomFromMap(waterCoolerQuestions)
-	waterCoolerEnQuestion := fmt.Sprintf(">*%s*", question[0])
-	waterCoolerRoQuestion := fmt.Sprintf(">*%s*", question[1])
+	waterCoolerEnQuestion := fmt.Sprintf(">*%s*", question.English)
+	waterCoolerRoQuestion := fmt.Sprintf(">*%s*", question.Romanian)
 
 	var blocks []slack.Block
 	blocks = append(blocks, slack.NewSectionBlock(slack.NewTextBlockObject("plain_text", waterCoolerEnIntro, true, false), nil, nil))
