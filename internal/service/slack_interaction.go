@@ -91,11 +91,18 @@ func (s *slackInteractionService) SlackEvents(eventsAPIEvent slackevents.EventsA
 
 	case *slackevents.MemberJoinedChannelEvent:
 		// send messages when a non bot user is added and when added to a specified channel id
-		if ev.User != *s.botUserId && ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") {
+		if ev.User != s.getBotUserId() && ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") {
 			go s.postMessage(ev.Channel, utils.GetRandomWelcomeMessage(ev.User))
 			go s.postMessage(ev.User, utils.GetNewMemberDM())
 		}
+	case *slackevents.MemberLeftChannelEvent:
+		// send messages when a non bot user is added and when added to a specified channel id
+		if ev.User != s.getBotUserId() && ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") {
+			joke := client.GetGeekJoke()
+			s.postMessage(ev.Channel, utils.GetFarewellMessage(ev.User, joke))
+		}
 	}
+
 	return nil
 }
 

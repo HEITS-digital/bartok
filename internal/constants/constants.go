@@ -90,6 +90,9 @@ var WatercoolerRoIntros = []string{
 	"Sau cum te-ar întreba un nou coleg de muncă care în prima zi s-a așezat langă tine:",
 }
 
+const FarewellMessageFormat string = `It's time to say farewell to <@%s>! We're sorry to see one of us leaving, but we certainly appreciate the time we spent together. Best of luck for the future!
+
+As the HEITSventure continues, here's a joke to brighten up the day: %s`
 const TeamJoinWelcomeMessageFormat string = `Welcome to HEITS.digital :wave: ! We are super excited that you joined us, and wish you the best of luck on this new adventure. 
 I’m Bartók the goat, and I am here to share some useful information with you:
 *1. Internal meetings*
