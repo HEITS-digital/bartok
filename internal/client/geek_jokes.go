@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ func getGeekJoke() string {
 	}
 
 	var responseObject JokeResponse
-	json.Unmarshal(responseData, &responseObject)
+	_ = json.Unmarshal(responseData, &responseObject)
 
 	return responseObject.Joke
 }

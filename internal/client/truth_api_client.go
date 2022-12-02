@@ -1,13 +1,14 @@
-package main
+package client
 
 import (
+	"bartok/internal/dto"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
-func getAnswer() (apiResponse TruthApiResponse, err error) {
+func GetAnswer() (apiResponse dto.TruthApiResponse, err error) {
 	response, err := http.Get("https://yesno.wtf/api/")
 
 	if err != nil {
@@ -21,13 +22,7 @@ func getAnswer() (apiResponse TruthApiResponse, err error) {
 		return apiResponse, nil
 	}
 
-	json.Unmarshal(responseData, &apiResponse)
+	err = json.Unmarshal(responseData, &apiResponse)
 
-	return apiResponse, nil
-}
-
-type TruthApiResponse struct {
-	Answer string `json:"answer"`
-	Forced bool   `json:"forced"`
-	Image  string `json:"image"`
+	return apiResponse, err
 }

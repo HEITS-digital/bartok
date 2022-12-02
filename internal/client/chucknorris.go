@@ -1,13 +1,14 @@
-package main
+package client
 
 import (
+	"bartok/internal/dto"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
-func getChuckNorrisJoke() string {
+func GetChuckNorrisJoke() string {
 	response, err := http.Get("https://api.chucknorris.io/jokes/random")
 
 	const errorResponse string = "I ain't got time for this. No jokes for you today!"
@@ -23,16 +24,8 @@ func getChuckNorrisJoke() string {
 		return errorResponse
 	}
 
-	var responseObject Response
-	json.Unmarshal(responseData, &responseObject)
+	var responseObject dto.ChuckNorrisResponse
+	_ = json.Unmarshal(responseData, &responseObject)
 
 	return responseObject.Value
-}
-
-type Response struct {
-	Value      string   `json:"value"`
-	Categories []string `json:"categories"`
-	CreatedAt  string   `json:"created_at"`
-	UpdatedAt  string   `json:"updated_at"`
-	Url        string   `json:"url"`
 }
