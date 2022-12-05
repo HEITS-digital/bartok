@@ -1,4 +1,5 @@
 runtime: go115
+main: ./cmd
 env_variables:
   SLACK_TOKEN: slack-token
   SLACK_SIGNING_SECRET: slack-signing-secret
