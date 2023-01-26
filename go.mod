@@ -1,6 +1,6 @@
 module bartok
 
-go 1.15
+go 1.17
 
 require (
 	cloud.google.com/go/firestore v1.8.0 // indirect

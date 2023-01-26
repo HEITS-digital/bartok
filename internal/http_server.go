@@ -25,7 +25,9 @@ func CreateHttpServer(slackInteractionService service.SlackInteractionService, w
 }
 
 func (h *httpServer) Start(port string) error {
+	fmt.Printf("Server listening on port %s\n", port)
 
+	http.HandleFunc("/status", h.statusHandler)
 	http.HandleFunc("/ask", h.slackAskHandler)
 	http.HandleFunc("/slack/events", h.slackEventsHandler)
 	http.HandleFunc("/cron/watercooler", h.watercoolerHandler)
@@ -35,7 +37,7 @@ func (h *httpServer) Start(port string) error {
 		log.Fatal(err)
 		return err
 	}
-	fmt.Printf("Server listening on port %s\n", port)
+
 	return nil
 }
 
@@ -107,6 +109,19 @@ func (h *httpServer) watercoolerHandler(http.ResponseWriter, *http.Request) {
 	if err != nil {
 		return
 	}
+}
+
+func (h *httpServer) statusHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+
+	response := make(map[string]string)
+	response["message"] = "ok"
+	json, _ := json.Marshal(response)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(json)
+
+	return
 }
 
 func verifyRequestAndRespond(w http.ResponseWriter, body []byte) {
