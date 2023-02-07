@@ -18,10 +18,11 @@ type HttpServer interface {
 type httpServer struct {
 	slackInteractionService service.SlackInteractionService
 	watercoolerService      service.WatercoolerService
+	birthdayService         service.HappyBirthdayService
 }
 
-func CreateHttpServer(slackInteractionService service.SlackInteractionService, watercoolerService service.WatercoolerService) HttpServer {
-	return &httpServer{slackInteractionService: slackInteractionService, watercoolerService: watercoolerService}
+func CreateHttpServer(slackInteractionService service.SlackInteractionService, watercoolerService service.WatercoolerService, birthdayService service.HappyBirthdayService) HttpServer {
+	return &httpServer{slackInteractionService: slackInteractionService, watercoolerService: watercoolerService, birthdayService: birthdayService}
 }
 
 func (h *httpServer) Start(port string) error {
@@ -31,6 +32,7 @@ func (h *httpServer) Start(port string) error {
 	http.HandleFunc("/ask", h.slackAskHandler)
 	http.HandleFunc("/slack/events", h.slackEventsHandler)
 	http.HandleFunc("/cron/watercooler", h.watercoolerHandler)
+	http.HandleFunc("/cron/birthday", h.birthdayHandler)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 	if err != nil {
@@ -109,6 +111,20 @@ func (h *httpServer) watercoolerHandler(http.ResponseWriter, *http.Request) {
 	if err != nil {
 		return
 	}
+}
+
+func (h *httpServer) birthdayHandler(w http.ResponseWriter, r *http.Request) {
+	cards := h.birthdayService.PostBirthDayCards()
+
+	response, err := json.Marshal(cards)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	_, _ = w.Write(response)
+
 }
 
 func (h *httpServer) statusHandler(w http.ResponseWriter, r *http.Request) {
