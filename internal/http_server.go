@@ -21,8 +21,16 @@ type httpServer struct {
 	birthdayService         service.HappyBirthdayService
 }
 
-func CreateHttpServer(slackInteractionService service.SlackInteractionService, watercoolerService service.WatercoolerService, birthdayService service.HappyBirthdayService) HttpServer {
-	return &httpServer{slackInteractionService: slackInteractionService, watercoolerService: watercoolerService, birthdayService: birthdayService}
+func CreateHttpServer(
+	slackInteractionService service.SlackInteractionService,
+	watercoolerService service.WatercoolerService,
+	birthdayService service.HappyBirthdayService,
+) HttpServer {
+	return &httpServer{
+		slackInteractionService: slackInteractionService,
+		watercoolerService:      watercoolerService,
+		birthdayService:         birthdayService,
+	}
 }
 
 func (h *httpServer) Start(port string) error {
