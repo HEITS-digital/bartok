@@ -110,10 +110,8 @@ func (googleCalendar *googleCalendarService) GetEmployeeBirthdays(timeNow time.T
 	calendarId := os.Getenv("GOOGLE_CALENDAR_EMPLOYEES")
 	googleCalendar.AttachCalendar(calendarId)
 
-	utcTime := timeNow.UTC()
-
-	startTime := time.Date(utcTime.Year(), utcTime.Month(), utcTime.Day(), 0, 0, 0, 0, utcTime.Location()).Format(time.RFC3339)
-	endTime := time.Date(utcTime.Year(), utcTime.Month(), utcTime.Day(), 23, 59, 59, 0, utcTime.Location()).Format(time.RFC3339)
+	startTime := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 0, 0, 0, 0, timeNow.Location()).Format(time.RFC3339)
+	endTime := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 23, 59, 59, 0, timeNow.Location()).Format(time.RFC3339)
 
 	var formattedEvents = make([]datastruct.EmployeeEvent, 0)
 
