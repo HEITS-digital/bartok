@@ -12,4 +12,4 @@ env_variables:
   GOOGLE_CALENDAR_EMPLOYEES: heits.digital_0eii42rl8rd4i57i0vpqqueg9k@group.calendar.google.com
   GOOGLE_CLIENT_SECRET: google-client-secret
   GOOGLE_CLIENT_ID: google-client-id
-  GOOGLE_REFRESH_TOKEN: google-refresh-token
+  GOOGLE_REFRESH_TOKEN: 1//google-refresh-token
