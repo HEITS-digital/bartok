@@ -10,6 +10,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
 	"google.golang.org/api/option"
+	"html"
 	"log"
 	"net/http"
 	"os"
@@ -90,17 +91,12 @@ func GenerateBirthdayWish(description string) string {
 	return description
 }
 
-func CreateEmployeeBirthdayEvent(item *calendar.Event) datastruct.EmployeeEvent {
-	date := item.Start.DateTime
-	if date == "" {
-		date = item.Start.Date
-	}
-
+func CreateEmployeeBirthdayEvent(item *calendar.Event, date string) datastruct.EmployeeEvent {
 	var employeeEvent datastruct.EmployeeEvent
 	employeeEvent.Id = item.Id
 	employeeEvent.Date = date
 	employeeEvent.Employee = item.Summary
-	employeeEvent.Text = GenerateBirthdayWish(item.Description)
+	employeeEvent.Text = GenerateBirthdayWish(html.UnescapeString(item.Description))
 	employeeEvent.Type = datastruct.Birthday
 
 	return employeeEvent
@@ -109,9 +105,13 @@ func CreateEmployeeBirthdayEvent(item *calendar.Event) datastruct.EmployeeEvent 
 func (googleCalendar *googleCalendarService) GetEmployeeBirthdays(timeNow time.Time) []datastruct.EmployeeEvent {
 	calendarId := os.Getenv("GOOGLE_CALENDAR_EMPLOYEES")
 	googleCalendar.AttachCalendar(calendarId)
+	const (
+		YYYYMMDD = "2006-01-02"
+	)
+	utcTime := timeNow.UTC()
 
-	startTime := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 0, 0, 0, 0, timeNow.Location()).Format(time.RFC3339)
-	endTime := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 23, 59, 59, 0, timeNow.Location()).Format(time.RFC3339)
+	startTime := time.Date(utcTime.Year(), utcTime.Month(), utcTime.Day(), 0, 0, 0, 0, utcTime.Location()).Format(time.RFC3339)
+	endTime := time.Date(utcTime.Year(), utcTime.Month(), utcTime.Day(), 23, 59, 59, 0, utcTime.Location()).Format(time.RFC3339)
 
 	var formattedEvents = make([]datastruct.EmployeeEvent, 0)
 
@@ -123,9 +123,13 @@ func (googleCalendar *googleCalendarService) GetEmployeeBirthdays(timeNow time.T
 	} else {
 		for _, item := range events.Items {
 			isBirthdayEvent, _ := regexp.MatchString(string(datastruct.Birthday), item.Summary)
+			date := item.Start.DateTime
+			if date == "" {
+				date = item.Start.Date
+			}
 
-			if isBirthdayEvent {
-				formattedEvents = append(formattedEvents, CreateEmployeeBirthdayEvent(item))
+			if isBirthdayEvent && utcTime.Format(YYYYMMDD) == date {
+				formattedEvents = append(formattedEvents, CreateEmployeeBirthdayEvent(item, date))
 			}
 		}
 	}
