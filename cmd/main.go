@@ -19,9 +19,12 @@ func main() {
 	}
 	dao := repository.NewDAO(firestoreClient)
 	slackService := service.NewSlackService(slackClient)
-	slackInteractionService := service.NewSlackInteractionService(slackService)
-	watercoolerService := service.NewWatercoolerService(slackService, dao)
-	server := internal.CreateHttpServer(slackInteractionService, watercoolerService)
+
+	server := internal.CreateHttpServer(
+		service.NewSlackInteractionService(slackService),
+		service.NewWatercoolerService(slackService, dao),
+		service.NewHappyBirthdayService(slackService),
+	)
 
 	_ = server.Start(os.Getenv("PORT"))
 }

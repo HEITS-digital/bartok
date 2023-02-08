@@ -113,3 +113,7 @@ There are quite a few other channels, depending on your interests or location. J
 - Linkedin page: https://www.linkedin.com/company/heits-digital/ - Follow & Share
 Hope I could be of help and I am working on adding new useful functions. If you have any suggestions, please drop a message to the engineering team.
 Sit back, relax, enjoy our community and have fun! :happygoat:`
+
+var RandomBirthdayWishes = []string{
+	"La mulți ani sănătoși și fericiți! %v Toate visele or să ți se împlinească dacă nu mai te uiți după capra vecinului :tada:",
+}

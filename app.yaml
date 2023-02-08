@@ -6,5 +6,10 @@ env_variables:
   SLACK_VERIFICATION_TOKEN: slack-verification-token
   WATERCOOLER_CHANNEL_ID: C0403NFNUJE
   GENERAL_CHANNEL_ID: CEC0Z16QL
+  BIRTHDAY_CHANNEL_ID: C04P503PXLY
   PORT: 8080
   FIRESTORE_PROJECT: bartok-312013
+  GOOGLE_CALENDAR_EMPLOYEES: heits.digital_0eii42rl8rd4i57i0vpqqueg9k@group.calendar.google.com
+  GOOGLE_CLIENT_SECRET: google-client-secret
+  GOOGLE_CLIENT_ID: google-client-id
+  GOOGLE_REFRESH_TOKEN: google-refresh-token

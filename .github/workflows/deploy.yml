@@ -16,6 +16,9 @@ jobs:
           sed -i "s/slack-token/${{ secrets.SLACK_TOKEN }}/g" ${{ github.workspace }}/app.yaml
           sed -i "s/slack-signing-secret/${{ secrets.SLACK_SIGNING_SECRET }}/g" ${{ github.workspace }}/app.yaml
           sed -i "s/slack-verification-token/${{ secrets.SLACK_VERIFICATION_TOKEN }}/g" ${{ github.workspace }}/app.yaml
+          sed -i "s/google-client-secret/${{ secrets.GOOGLE_CLIENT_SECRET }}/g" ${{ github.workspace }}/app.yaml
+          sed -i "s/google-client-id/${{ secrets.GOOGLE_CLIENT_ID }}/g" ${{ github.workspace }}/app.yaml
+          sed -i "s/google-refresh-token/${{ secrets.GOOGLE_REFRESH_TOKEN }}/g" ${{ github.workspace }}/app.yaml
       - name: Deploy to App Engine
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:

@@ -19,10 +19,30 @@ function validateEnv() {
       exit 1
   fi
 
-    if [[ -z "SLACK_SIGNING_SECRET" ]]; then
-        echo "Must provide SLACK_SIGNING_SECRET in build.env file." 1>&2
-        exit 1
-    fi
+  if [[ -z "SLACK_SIGNING_SECRET" ]]; then
+      echo "Must provide SLACK_SIGNING_SECRET in build.env file." 1>&2
+      exit 1
+  fi
+
+  if [[ -z "SLACK_VERIFICATION_TOKEN" ]]; then
+      echo "Must provide SLACK_VERIFICATION_TOKEN in build.env file." 1>&2
+      exit 1
+  fi
+
+  if [[ -z "GOOGLE_CLIENT_ID" ]]; then
+      echo "Must provide GOOGLE_CLIENT_ID in build.env file." 1>&2
+      exit 1
+  fi
+
+  if [[ -z "GOOGLE_CLIENT_SECRET" ]]; then
+      echo "Must provide GOOGLE_CLIENT_SECRET in build.env file." 1>&2
+      exit 1
+  fi
+
+  if [[ -z "GOOGLE_REFRESH_TOKEN" ]]; then
+      echo "Must provide GOOGLE_REFRESH_TOKEN in build.env file." 1>&2
+      exit 1
+  fi
 }
 
 function hot() {
@@ -50,8 +70,14 @@ function run() {
     go mod tidy && \
     docker run \
     -e SLACK_TOKEN=$SLACK_TOKEN \
+    -e SLACK_VERIFICATION_TOKEN=$SLACK_VERIFICATION_TOKEN \
     -e FIRESTORE_PROJECT=$FIRESTORE_PROJECT \
     -e SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET \
+    -e BIRTHDAY_CHANNEL_ID=$BIRTHDAY_CHANNEL_ID \
+    -e GOOGLE_CALENDAR_EMPLOYEES=$GOOGLE_CALENDAR_EMPLOYEES \
+    -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
+    -e GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
+    -e GOOGLE_REFRESH_TOKEN=$GOOGLE_REFRESH_TOKEN \
     -e PORT=$PORT \
     -p 8000:8000 \
     --volume=$(PWD)/internal:/app/internal \
