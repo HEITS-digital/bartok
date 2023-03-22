@@ -91,9 +91,9 @@ func (s *slackInteractionService) SlackEvents(eventsAPIEvent slackevents.EventsA
 
 	case *slackevents.MemberJoinedChannelEvent:
 		// send messages when a non bot user is added and when added to a specified channel id
-		if ev.User != s.getBotUserId() && ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") {
+		if ev.User != s.getBotUserId() && (ev.Channel == os.Getenv("GENERAL_CHANNEL_ID") || ev.Channel == "C043G8KMEA3") {
 			go s.postMessage(ev.Channel, utils.GetRandomWelcomeMessage(ev.User))
-			go s.postMessage(ev.User, utils.GetNewMemberDM())
+			go s.slackService.SendMessage(ev.User, utils.GetNewMemberDM())
 		}
 	case *slackevents.MemberLeftChannelEvent:
 		// send messages when a non bot user is added and when added to a specified channel id
