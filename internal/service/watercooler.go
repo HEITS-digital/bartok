@@ -5,7 +5,6 @@ import (
 	"bartok/internal/datastruct"
 	"bartok/internal/repository"
 	"bartok/internal/utils"
-	"fmt"
 	"github.com/slack-go/slack"
 	"os"
 )
@@ -44,30 +43,11 @@ func createMessageBlocksForWatercooler(question *datastruct.Question) []slack.Bl
 	roIntro := utils.GetRandomItem(constants.WatercoolerRoIntros)
 
 	blocks := []slack.Block{
-		textToTextBlock(greeting),
-		textToTextBlock(enIntro),
-		textToQuotedTextBlock(question.English),
-		textToTextBlock(roIntro),
-		textToQuotedTextBlock(question.Romanian),
+		utils.TextToTextBlock(greeting),
+		utils.TextToTextBlock(enIntro),
+		utils.TextToQuotedTextBlock(question.English),
+		utils.TextToTextBlock(roIntro),
+		utils.TextToQuotedTextBlock(question.Romanian),
 	}
 	return blocks
-}
-
-func textToTextBlock(text string) slack.Block {
-	return slack.NewSectionBlock(
-		slack.NewTextBlockObject("plain_text", text, true, false),
-		nil,
-		nil,
-	)
-}
-func textToQuotedTextBlock(text string) slack.Block {
-	return slack.NewSectionBlock(
-		slack.NewTextBlockObject("mrkdwn", quotedText(text), false, false),
-		nil,
-		nil,
-	)
-}
-
-func quotedText(text string) string {
-	return fmt.Sprintf(">*%s*", text)
 }
