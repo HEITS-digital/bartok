@@ -8,7 +8,7 @@ This is a tiny playful project, with the purpose of showcasing a basic integrati
 - Docker for developing or running the app locally inside a container.
 - [GCP App Engine](https://cloud.google.com/appengine/docs/standard/go/building-app) (standard environment) for web hosting.
 
-##### Creating the bot for your slack worksplace:
+##### Creating the bot for your slack workspace:
 
 A token is required in order to connect the bot to the slack API. 
 For generating a token and creating a bot for your slack workspace you can find detailed information [here](https://slack.com/intl/en-ro/help/articles/115005265703-Create-a-bot-for-your-workspace).
