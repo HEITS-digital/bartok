@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: repo checkout
         uses: actions/checkout@v3
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
       - name: prepare the secrets for deployment
         run: |
           sed -i "s/slack-token/${{ secrets.SLACK_TOKEN }}/g" ${{ github.workspace }}/app.yaml
@@ -24,4 +29,5 @@ jobs:
         with:
           deliverables: app.yaml cron.yaml
           project_id: ${{ secrets.GCP_PROJECT }}
-          credentials: ${{ secrets.GCP_SA_KEY }}
+
+

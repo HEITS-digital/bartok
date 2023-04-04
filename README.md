@@ -28,7 +28,7 @@ Once the PR passed the review and gets pushed, there's a [workflow available](ht
 - `./bartok.sh build` - builds the docker image
 - `./bartok run` - starts the app on `localhost:8000` with hot reload
 - `./bartok hot` - starts the app on the host machine with hot reload
-  - requires `brew install go@1.17.0`
+  - requires `brew install go@1.20.2`
   - go install github.com/cosmtrek/air@1.27.10
   - you may need to perform the following steps in case of `air` can not be found:
     - `mv $(go env GOPATH)/bin/air ~/.air`
