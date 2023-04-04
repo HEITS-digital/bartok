@@ -2,7 +2,7 @@ name: Deploy to Google App Engine
 
 on:
   push:
-    branches: [ iulian-balan/fix-pipeline ]
+    branches: [ main ]
     
 jobs:
   build:
