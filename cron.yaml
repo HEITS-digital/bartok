@@ -2,14 +2,16 @@ cron:
   - description: 'watercooler message'
     url: /cron/watercooler
     target: default
-    schedule: every mon,wed,fri 11:00
+    schedule: every mon,wed,fri 14:00
+    timezone: Europe/Bucharest
     retry_parameters:
       min_backoff_seconds: 2.5
       max_doublings: 5
   - description: 'happy birthday message'
     url: /cron/birthday
     target: default
-    schedule: every day 08:00
+    schedule: every day 10:00
+    timezone: Europe/Bucharest
     retry_parameters:
       min_backoff_seconds: 2.5
       max_doublings: 5
