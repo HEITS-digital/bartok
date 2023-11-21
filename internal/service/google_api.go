@@ -76,9 +76,8 @@ func (googleCalendar *googleCalendarService) AttachCalendar(calendarId string) *
 func GenerateBirthdayWish(description string) string {
 	expression, _ := regexp.Compile("\\<@(.*?)\\>")
 
-	// without slack user id we do not want to proceed
 	if !expression.MatchString(description) {
-		return ""
+		return description
 	}
 
 	matches := strings.Join(expression.FindAllString(description, -1), "")
