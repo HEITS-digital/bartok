@@ -4,12 +4,13 @@ import (
 	"bartok/internal/service"
 	"encoding/json"
 	"fmt"
-	"github.com/slack-go/slack"
-	"github.com/slack-go/slack/slackevents"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/slack-go/slack"
+	"github.com/slack-go/slack/slackevents"
 )
 
 type HttpServer interface {
@@ -41,6 +42,7 @@ func (h *httpServer) Start(port string) error {
 	http.HandleFunc("/slack/events", h.slackEventsHandler)
 	http.HandleFunc("/cron/watercooler", h.watercoolerHandler)
 	http.HandleFunc("/cron/birthday", h.birthdayHandler)
+	http.HandleFunc("/slack/interactive", h.checkboxHandler)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 	if err != nil {
@@ -146,6 +148,30 @@ func (h *httpServer) statusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(json)
 
 	return
+}
+
+func (h *httpServer) checkboxHandler(w http.ResponseWriter, r *http.Request) {
+	var payload slack.InteractionCallback
+	err := json.Unmarshal([]byte(r.FormValue("payload")), &payload)
+	if err != nil {
+		log.Printf("Error parsing interaction callback: %v", err)
+		http.Error(w, "Error parsing interaction callback", http.StatusBadRequest)
+		return
+	}
+
+	// if payload.Type == slack.InteractionTypeBlockActions {
+	// 	for _, action := range payload.ActionCallback.BlockActions {
+	// 		if action.ActionID == constants.CheckboxActionId {
+	// 			checkedItems := action.SelectedOptions
+
+	// 			// WIP here's how the checked items are verified
+	// 			for _, option := range checkedItems {
+	// 				fmt.Printf("Checked item: %s\n", option.Value)
+	// 				fmt.Printf("Option text: %s\n", option.Text.Text)
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
 
 func verifyRequestAndRespond(w http.ResponseWriter, body []byte) {

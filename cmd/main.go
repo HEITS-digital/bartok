@@ -4,9 +4,10 @@ import (
 	"bartok/internal"
 	"bartok/internal/repository"
 	"bartok/internal/service"
-	"github.com/slack-go/slack"
 	"log"
 	"os"
+
+	"github.com/slack-go/slack"
 )
 
 func main() {
