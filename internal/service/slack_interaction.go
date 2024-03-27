@@ -6,11 +6,12 @@ import (
 	"bartok/internal/datastruct"
 	"bartok/internal/utils"
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/abadojack/whatlanggo"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
-	"os"
-	"strings"
 )
 
 type SlackInteractionService interface {
