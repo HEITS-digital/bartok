@@ -194,3 +194,4 @@ var RandomBirthdayWishes = []string{
 }
 
 const CheckboxActionId = "checkbox"
+const WelcomeImageUrl = "https://raw.githubusercontent.com/HEITS-digital/bartok/main/resources/welcome-image.png"

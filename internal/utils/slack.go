@@ -21,6 +21,8 @@ func GetNewMemberDM() []slack.Block {
 
 	blocks := []slack.Block{
 		TextToHeaderBlock(constants.WelcomeHeader),
+		ImageBlock(constants.WelcomeImageUrl),
+
 		TextToMarkdownBlock(constants.WelcomeIntro1),
 		TextToMarkdownBlock(constants.WelcomeIntro2),
 
@@ -88,6 +90,8 @@ func TextToMarkdownBlock(text string) slack.Block {
 func TextAndOptionsToCheckboxBlock(text string, options []string) slack.Block {
 	var optionsBlock []*slack.OptionBlockObject
 	for index, option := range options {
+		// the option value needs to be unique among all the options to be sent
+		// If not, options having the same value will be auto-checked when one will be selected
 		uuid := uuid.New().String()[:10]
 		textBlock := slack.NewTextBlockObject("mrkdwn", option, false, false)
 		optionBlock := slack.NewOptionBlockObject(fmt.Sprintf(uuid, index), textBlock, nil)
@@ -98,6 +102,9 @@ func TextAndOptionsToCheckboxBlock(text string, options []string) slack.Block {
 		nil,
 		slack.NewAccessory(slack.NewCheckboxGroupsBlockElement(constants.CheckboxActionId, optionsBlock...)),
 	)
+}
+func ImageBlock(imageUrl string) slack.Block {
+	return slack.NewImageBlock(imageUrl, "Heits.digital", uuid.New().String()[:5], nil)
 }
 
 func quotedText(text string) string {
