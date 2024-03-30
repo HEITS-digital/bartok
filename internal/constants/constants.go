@@ -91,11 +91,49 @@ var WatercoolerRoIntros = []string{
 }
 
 const FarewellMessageFormat string = `It's time to say farewell to <@%s>! We're sorry to see one of us leaving, but we certainly appreciate the time we spent together. Best of luck for the future!
-
 As the HEITSventure continues, here's a joke to brighten up the day: %s`
-const WelcomeHeader string = "Welcome to HEITS.digital!"
-const WelcomeIntro string = `We are super excited that you joined us, and wish you the best of luck on this new adventure. May you have great experiences with us!
-I’m *Bartók, the goat*, and I am here to support you. I know every beginning comes with uncertainties, so let me bring some clarity and share some useful information with you:`
+
+const WelcomeHeader string = "Welcome to HEITS.digital"
+const WelcomeIntro1 string = `:blob-wave: We are super excited that you joined us, and wish you the best of luck on this new adventure. May you have great experiences with us!`
+const WelcomeIntro2 string = `I’m Bartók, the goat :bartok:, and I am here to support you. I know every beginning comes with uncertainties, so let me bring some clarity and share some useful information with you.`
+
+const HeimsAppHeader string = `:heits-white-woodsmoke: HEIMS app`
+const HeimsAppSection1 string = `<https://heims.heits.digital|Here> is your go-to app.`
+const HeimsAppSection2 string = `You can authenticate using your Google account, and add your vacation days, sick days and special events days here. Once approved, they will appear in your Google calendar.`
+const HeimsAppSection3 string = `If you're from Cluj or Iasi - you can book a mega all set desk at the office.`
+const HeimsAppSection4 string = `_• Cluj only - we also use HEIMS for booking the parking spot._`
+const HeimsAppSection5 string = `Also, you can find info about your HR, PM & colleagues. Don't hesitate to reach out to us – we're here to make your experience as smooth and enjoyable as possible!`
+const HeimsAppSection6 string = `iOS app - download <https://testflight.apple.com/join/LQxuHkwl|here>!`
+
+const ChannelsHeader string = `:slack: Channels to Join on Slack`
+const ChannelsSection1 string = "• Company updates → #general\n• Tech subjects or questions → #engineering\n• Administrative & financial stuff → #-administrativ\n• Games, hobbies & fun → #random, #board-games, #outdoor-activities, #cooking, #heits-pets, #watercooler, #umpicdelauda\n• Tech subjects or questions → #engineering\n• Public praising & recognition → #here-to-praise"
+const ChannelsSection2 string = `There are quite a few more channels, depending on your interests or location. Here you can find a list of them.`
+
+const AboutHeader string = `📚 Read About HEITS Culture`
+const AboutSection1 string = `I recommend you to check our <https://coda.io/d/HEITS-Internal-Wiki_duuNUXBfgqZ/Welcome_suwUQ#_lu0Wo|Internal Wiki> page on CODA. There you will find details about our company, policies, clients, colleagues, events, and many more.`
+
+const OnboardingHeader string = `:white_check_mark: Onboarding Inventory`
+const OnboardingSection1 string = `Let’s start with some easy checkable ones, otherwise you couldn’t read this: :sweat_smile:`
+const OnboardingCheckbox1 string = `Ensure all necessary administrative paperwork is filled out.`
+const OnboardingCheckbox2 string = `Check this if you received your fancy welcome kit.`
+const OnboardingCheckbox3 string = `Set up & configure your hardware & software equipment.`
+
+const OnboardingSection2 string = `:blob_cheer: *The real deal cool next steps:*`
+const OnboardingCheckbox4 string = `Coffee is great! Get familiar with the facilities at the office.`
+const OnboardingCheckbox5 string = `Read more about the company's mission, values, and culture, policies, procedures on Coda.`
+const OnboardingCheckbox6 string = `Attend the nice discussion to meet your future team members.`
+const OnboardingCheckbox7 string = `If it’s Monday, it’s *Informal day* - you’ll be the rock star.`
+const OnboardingCheckbox8 string = `Chat with your HR in oder to clarify any misunderstandings.`
+
+const OnboardingSection3 string = `*In a few months you should also check these:*`
+const OnboardingCheckbox9 string = `Participate in a feedback session to discuss your progress.`
+const OnboardingCheckbox10 string = `Share your thoughts and experiences so far, with your HR or PM.`
+const OnboardingCheckbox11 string = `Attend team lunches or informal gatherings.`
+const OnboardingCheckbox12 string = `Take advantage of opportunities to network with colleagues.`
+
+const TrustSection string = `Trust the process, you will end up loving here :star:`
+const TrustCheckbox string = `Enjoy the *new adventure.*`
+
 const WelcomeInternalMeetings string = `:heits-white-woodsmoke: *Internal meetings*
 
 >*Internal & Informal meeting*
@@ -154,3 +192,6 @@ Hope I could be of help! As I am constantly working on adding new useful functio
 var RandomBirthdayWishes = []string{
 	"La mulți ani sănătoși și fericiți! %v Toate visele or să ți se împlinească dacă nu mai te uiți după capra vecinului :tada:",
 }
+
+const CheckboxActionId = "checkbox"
+const WelcomeImageUrl = "https://raw.githubusercontent.com/HEITS-digital/bartok/main/resources/welcome-image.png"
