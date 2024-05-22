@@ -103,7 +103,7 @@ const HeimsAppSection2 string = `You can authenticate using your Google account,
 const HeimsAppSection3 string = `If you're from Cluj or Iasi - you can book a mega all set desk at the office.`
 const HeimsAppSection4 string = `_• Cluj only - we also use HEIMS for booking the parking spot._`
 const HeimsAppSection5 string = `Also, you can find info about your HR, PM & colleagues. Don't hesitate to reach out to us – we're here to make your experience as smooth and enjoyable as possible!`
-const HeimsAppSection6 string = `iOS app - download <https://testflight.apple.com/join/LQxuHkwl|here>!`
+const HeimsAppSection6 string = `iOS app - download <https://testflight.apple.com/join/8BA8zYqZ|here>!`
 
 const ChannelsHeader string = `:slack: Channels to Join on Slack`
 const ChannelsSection1 string = "• Company updates → #general\n• Tech subjects or questions → #engineering\n• Administrative & financial stuff → #-administrativ\n• Games, hobbies & fun → #random, #board-games, #outdoor-activities, #cooking, #heits-pets, #watercooler, #umpicdelauda\n• Tech subjects or questions → #engineering\n• Public praising & recognition → #here-to-praise"
